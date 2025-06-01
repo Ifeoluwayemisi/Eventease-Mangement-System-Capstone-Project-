@@ -1,0 +1,1 @@
+// Authentication handling for the Eventease Management System
