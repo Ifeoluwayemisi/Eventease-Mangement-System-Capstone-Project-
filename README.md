@@ -1,37 +1,91 @@
-# EventEase Backend (Workspace Setup)
+# Event Management Backend Setup
+Welcome to the **EventEase** backend! This README will guide you through setting up the workspace so you can start working on your assigned tasks smoothly.
 
-This is the backend workspace for the EventEase event management system, built with Node.js, Express.js, Sequelize, and MySQL.
+
+## Project Overview
+EventEase is a backend system for managing events, guests, check-ins, and registrations using QR codes.  
+Built with **Node.js (ESM)**, **Express.js**, **MySQL**, **Sequelize ORM** and uses **Crypto** and **Swagger**.
+
 
 ---
 
 ## 📁 Folder Structure
-eventease-backend/
-├── config/
-│ └── database.js  # Database connection setup using Sequelize
+/backend
 │
-├── controllers/
-│ ├── authController.js  # User authentication logic
-│ ├── eventController.js  # Event creation and management logic
-│ └── guestController.js  # Guest management logic
-│  
-├── middlewares/
-│ ├── authMiddleware.js  # JWT authentication middleware
-│ └── errorMiddleware.js  # Error handling middleware
+├── config/ # Configuration files
+│ ├── database.js # Sequelize DB config
+│ ├── cloudStorage.js # AWS S3 setup (optional)
+│ └── 
 │
-├── models/
-│ ├── User.js # Sequelize User model
-│ ├── Event.js # Sequelize Event model
-│ ├── Guest.js # Sequelize Guest model
-│ └── index.js # Model associations and exports
+├── controllers/ # Handles request logic
+│ ├── authController.js
+│ ├── eventController.js
+│ ├── guestController.js
+│ └── qrController.js
 │
-├── routes/
-│ ├── authRoutes.js # Routes for authentication (login, register)
-│ ├── eventRoutes.js # Routes for event endpoints
-│ └── guestRoutes.js # Routes for guest endpoints
+├── middlewares/ # Custom middleware functions
+│ ├── authMiddleware.js
+│ ├── errorHandler.js
+│ ├── rateLimiter.js
+│ └── validateInput.js
 │
-├── .env  # Environment variables (not committed to git)
-├── server.js  # Entry point, sets up Express server
-├── package.json  # Project dependencies and scripts
-└── README.md  # Project documentation and setup guide
+├── migrationa
+│ ├── 01-create-user.js
+│ ├── 02-create-user.js
+│ ├── 03-create-user.js
+│ └── 04-create-user.js
+│
+│
+├── models/ # Sequelize models
+│ ├── User.js
+│ ├── Event.js
+│ ├── Guest.js
+│ └── Schedule.js
+│
+├── routes/ # API routes
+│ ├── authRoutes.js
+│ ├── eventRoutes.js
+│ ├── guestRoutes.js
+│ └── qrRoutes.js
+│
+├── seeders
+│ ├── 01-admin-user.js
+│
+├── utils/ # Utility functions
+│ ├── generateQR.js
+│ └── crypto.js
+│
+├── .env # Environment variables (not committed)
+├── server.js # Main app entry point
+├── package.json
+└── README.md
+
+
+---
+
+## 🧰 Tech Stack
+
+- Node.js (ESM)
+- Express.js
+- MySQL + Sequelize
+- JWT Auth
+- Nodemailer
+- Crypto (Node built-in)
+- Swagger (swagger-ui-express, yamljs)
+- dotenv
+- Postman (for testing)
+- Jest + Supertest (testing)
+
+---
+
+## ✅ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Ifeoluwayemisi/Eventease-Mangement-System-Capstone-Project-.git
+
+
+
 
 
