@@ -1,65 +1,54 @@
 # Event Management Backend Setup
-Welcome to the **EventEase** backend! This README will guide you through setting up the workspace so you can start working on your assigned tasks smoothly.
+Welcome to the **EventEase** backend! This is a robust Node.js/Express.js backend (ESM-based) designed to manage events, guest lists, and more, built with MySQL, Postman, and Django email integration. Let’s dive into what this project is about and how it’s structured! 🚀
 
 
 ## Project Overview
-EventEase is a backend system for managing events, guests, check-ins, and registrations using QR codes.  
-Built with **Node.js (ESM)**, **Express.js**, **MySQL**, **Sequelize ORM** and uses **Crypto** and **Swagger**.
+**Purpose**
+This backend powers an event management system, enabling organizers to create events, manage guest lists, generate secure QR codes (using HMAC-SHA256 and Crypto), schedule events, register users, and send email notifications via Django
 
+**Key Features**
+
+* User Registration & Login: Register new users and authenticate them.
+* Event Management: Create and schedule events.
+* Guest List Management: Track guests with secure QR codes.
+* QR Code Generation/Validation: Generate QR codes with HMAC-SHA256 and a linked list for integrity, validated     during check-in.
+* Email Notifications: Send registration and alert emails using Django.
+* API-Driven: Built with Express.js, tested via Postman.
 
 ---
 
-## 📁 Folder Structure
-/backend
-│
-├── config/ # Configuration files
-│ ├── database.js # Sequelize DB config
-│ ├── cloudStorage.js # AWS S3 setup (optional)
-│ └── 
-│
-├── controllers/ # Handles request logic
-│ ├── authController.js
-│ ├── eventController.js
-│ ├── guestController.js
-│ └── qrController.js
-│
-├── middlewares/ # Custom middleware functions
-│ ├── authMiddleware.js
-│ ├── errorHandler.js
-│ ├── rateLimiter.js
-│ └── validateInput.js
-│
-├── migrationa
-│ ├── 01-create-user.js
-│ ├── 02-create-user.js
-│ ├── 03-create-user.js
-│ └── 04-create-user.js
-│
-│
-├── models/ # Sequelize models
-│ ├── User.js
-│ ├── Event.js
-│ ├── Guest.js
-│ └── Schedule.js
-│
-├── routes/ # API routes
-│ ├── authRoutes.js
-│ ├── eventRoutes.js
-│ ├── guestRoutes.js
-│ └── qrRoutes.js
-│
-├── seeders
-│ ├── 01-admin-user.js
-│
-├── utils/ # Utility functions
-│ ├── generateQR.js
-│ └── crypto.js
-│
-├── .env # Environment variables (not committed)
-├── server.js # Main app entry point
-├── package.json
-└── README.md
+**Getting Started**
 
+**Prerequisites**: Node.js 18+, MySQL, Git, Postman (optional), AWS account (for S3).
+**Setup Guide**: See docs/Setup_Guide.md (to be added) for detailed steps.
+
+
+## 📁 Folder Structure
+event-management-backend/
+├── backend/              # Main backend application folder
+│   ├── src/             # Source code
+│   │   ├── controllers/ # API logic (e.g., user.js, event.js, guest.js)
+│   │   ├── models/      # Sequelize models (e.g., User.js, Event.js, Guest.js)
+│   │   ├── routes/      # Express routes (e.g., auth.js, events.js, guests.js)
+│   │   ├── services/    # Utility functions (e.g., qr.js for QR generation)
+│   │   ├── middleware/  # Middleware (e.g., auth.js, validator.js)
+│   │   ├── config/      # Configuration files (e.g., env.js)
+│   │   ├── server.js     # Entry point
+│   ├── docs/            # Documentation
+│   │   ├── Backend_Tasks.docx  # Task assignments
+│   │   ├── swagger.yaml       # API documentation
+│   │   ├── postman_collection.json # Postman config
+│   ├── tests/           # Test files
+│   │   ├── unit/        # Unit tests (e.g., event.test.js)
+│   │   ├── integration/ # Integration tests (e.g., api.test.js)
+│   ├── migrations/      # Sequelize database migrations
+│   ├── seeders/         # Seed data (e.g., admin-user.js)
+│   ├── package.json     # Node.js dependencies and scripts
+│   ├── package-lock.json # Dependency lock file
+│   ├── .env.example     # Environment variable template
+│   └── .gitignore       # Git ignore rules
+├── README.md            # This file (project overview)
+└── 
 
 ---
 
