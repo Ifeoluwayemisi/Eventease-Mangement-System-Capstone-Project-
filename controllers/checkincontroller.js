@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import Guest from '..models/Guest.js';
 
 export const checkInGuest = async (req, res) => {
-    const { guestId, eventId hash} = req.body;
+    const { guestId, eventId, hash} = req.body;
 
     const hmac = crypto.createHmac('sha256', process.env.JWT_SECRET);
     const validHash = hmac.update(`${guestId}${eventId}`).digest('hex');
