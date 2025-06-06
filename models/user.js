@@ -9,6 +9,12 @@ import sequelize from '../config/database.js'; // Import the Sequelize instance 
 
 // Define the User model with its attributes and constraints
 const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+
   name: {
     type: DataTypes.STRING,
     allowNull: false,
