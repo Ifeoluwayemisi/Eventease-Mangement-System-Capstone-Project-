@@ -9,6 +9,11 @@ import sequelize from '../config/database.js'; // Import the Sequelize instance 
 
 // Define the User model with its attributes and constraints
 const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true, // Automatically increment the ID for each new user
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -26,6 +31,9 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('admin', 'organizer', 'guest'),
     defaultValue: 'organizer', // Default role is 'organizer'
   },
+}, {
+  timestamps: true, // Automatically manage createdAt and updatedAt fields
+  tableName: 'users', // Specify the table name if different from the model name
 });
 
 

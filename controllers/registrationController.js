@@ -24,6 +24,6 @@ export const registerGuest = async (req, res) => {
 
         res.status(201).json({ qrCode: qrimage, guest });
     } catch (err) {
-        res.status(500).json({error: 'Failed to register guest.'});
+        res.status(500).json({error: 'Failed to register guest!'});
     }
 };
