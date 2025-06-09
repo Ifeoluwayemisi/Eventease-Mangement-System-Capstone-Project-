@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  title: Event API
+  version: 1.0.0
+paths:
+  /api/events:
+    post:
+      summary: Create an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                date:
+                  type: string
+                  format: date
+      responses:
+        201:
+          description: Created
+  /api/guests/{eventId}:
+    get:
+      summary: Get paginated guests
+      parameters:
+        - in: path
+          name: eventId
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

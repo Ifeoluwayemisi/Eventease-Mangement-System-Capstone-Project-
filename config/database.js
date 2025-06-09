@@ -9,11 +9,11 @@ dotenv.config(); // Load environment variables from .env file
 
 // Create a new Sequelize instance with database connection details
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  process.env.DB_NAME || 'eventease_db',
+  process.env.DB_USER || 'root',
+  process.env.DB_PASSWORD || 'yourpassword',
   {
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOST || 'localhost', // Default to localhost if not set,
     dialect: 'mysql',
     port: process.env.DB_PORT || 3306, // Default MySQL port
   }
