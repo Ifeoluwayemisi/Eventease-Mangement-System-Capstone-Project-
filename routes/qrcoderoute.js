@@ -1,5 +1,5 @@
 import express from 'express';
-import {generateQRCode} from '../controllers/qrcodecontroller.js';
+import {generateQRCode, validateQRCode} from '../controllers/qrcodecontroller.js';
 import { authenticate } from '../middleware/auth.js';
 import { validateEventId } from '../middleware/validateEvent.js';
 
