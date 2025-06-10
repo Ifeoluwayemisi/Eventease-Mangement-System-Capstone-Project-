@@ -37,4 +37,4 @@ const Schedule = sequelize.define('Schedule', {
   ],
 });
 
-export default Schedule;
+module.exports = Schedule;

@@ -20,4 +20,4 @@ const Guest = sequelize.define('Guest', {
   timestamps: true,
 });
 
-export default Guest;
+module.exports = Guest;
