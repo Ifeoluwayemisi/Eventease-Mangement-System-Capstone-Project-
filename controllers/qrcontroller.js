@@ -33,6 +33,7 @@ export const generateQRCode = async (req, res) => {
         const hmac = crypto.createHmac('sha256', secret). update(payload).digest(`hex`);
 
         //Encode the QR code data
+
         const qrData = Json.stringify({
             guestID,
             eventID,
