@@ -4,6 +4,7 @@ import sequelize from '../config/database.js'; // Import the Sequelize instance 
 import User from './user.js'; // Import the User model  
 import Event from './event.js'
 import Guest from './guest.js';
+import Schedule from './schedule.js'
 
 // Organizer (user) creates Events
 User.hasMany(Event, { foreignKey: 'organizerId' }); // Define a one-to-many relationship between User and Event
@@ -14,4 +15,4 @@ Event.hasMany(Guest, { foreignKey: 'eventId' }); // Define a one-to-many relatio
 Guest.belongsTo(Event, { foreignKey: 'eventId', as: "event" }); // Define a many-to-one relationship from Guest to Event
 
 
-export { User, Event, Guest };
+export { User, Event, Guest, Schedule };

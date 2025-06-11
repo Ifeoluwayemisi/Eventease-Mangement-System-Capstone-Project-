@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
+
 const Event = sequelize.define("Event", {
     id: {
     type: DataTypes.INTEGER,
@@ -33,7 +34,6 @@ const Event = sequelize.define("Event", {
 },
 {
   timestamps: true, // Automatically manage createdAt and updatedAt fields
-  tableName: "events", // Specify the table name if different from the model name
 });
 
 

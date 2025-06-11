@@ -22,16 +22,24 @@ const generateHMAC = (guestId, eventId) => {
 export const generateQRCode = async (req, res) => {
     try {
         const {guestID, eventID} = req.body;
+
+        // Ensures IDs are present
         if (!guestID || !eventID) {
             return res.status(400).json({error: 'Guest ID and Event ID are required'});
         }
-        const hmac = generateHMAC(guestID, eventID);
-        const qrPayload = Json.stringify({
+
+        // Generate HMAC
+        const payload = `${guestId} : ${eventID}`;
+        const hmac = crypto.createHmac('sha256', secret). update(payload).digest(`hex`);
+
+        //Encode the QR code data
+        const qrData = Json.stringify({
             guestID,
             eventID,
             hmac,
             timestamp: Date.now()
         });
+        const qrImage = await QRCode.toDataURL(qrData);
 
         const fileName = `${uuidv4()}.png`;
         const filePath = path.join(__dirname, '..qrcodes', fileName);

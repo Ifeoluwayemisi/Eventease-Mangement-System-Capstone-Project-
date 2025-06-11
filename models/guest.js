@@ -22,8 +22,7 @@ const Guest = sequelize.define('Guest', {
   }
 },
 {
-    timestamps: true, // Automatically manage createdAt and updatedAt fields
-    tableName: 'guests' 
+    timestamps: true, // Automatically manage createdAt and updatedAt fields 
 });
 
 export default Guest;

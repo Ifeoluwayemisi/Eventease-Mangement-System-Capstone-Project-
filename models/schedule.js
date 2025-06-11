@@ -3,19 +3,14 @@ import sequelize from '../config/database.js';// Import the Sequelize instance f
 
 // Schedule model for the EventEase Management System
 const Schedule = sequelize.define('Schedule', {
-  id: {
+  scheduleId: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
-  time: {
-    type: DataTypes.TIME,
-    allowNull: false
-  },
-  activity: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
+  eventId: DataTypes.INTEGER,
+  activity: DataTypes.STRING,
+  time: DataTypes.DATE,
 },
 {
     timestamps : true

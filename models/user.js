@@ -27,13 +27,8 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  role: {
-    type: DataTypes.ENUM('admin', 'organizer', 'guest'),
-    defaultValue: 'organizer', // Default role is 'organizer'
-  },
 }, {
   timestamps: true, // Automatically manage createdAt and updatedAt fields
-  tableName: 'users', // Specify the table name if different from the model name
 });
 
 
