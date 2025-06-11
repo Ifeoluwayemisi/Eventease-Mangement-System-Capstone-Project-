@@ -16,6 +16,7 @@ app.use(express.json());
 app.use('/api/registration', registrationRoutes); // Use registration routes
 app.use('/api', checkinRoutes); 
 app.use('api/qr', qrcodeRoutes); // Use QR code routes
+app.use('/qrcodes', express.static('qrcodes'))
 
 const PORT = process.env.PORT || 3306; // Set the port from environment variables or default to 3306
 

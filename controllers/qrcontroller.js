@@ -20,7 +20,7 @@ const generateHMAC = (guestId, eventId) => {
     return crypto.createHmac('sha256',SECRET).update(payload).digest('hex');
 };
 
-export const QRCode = async (req, res) => {
+export const generateQRCode = async (req, res) => {
     try {
         const {guestID, eventID} = req.body;
 
@@ -115,64 +115,12 @@ export const validateQRCode = async (req, res) => {
     }
 };
 
-        // AWS setup
-        const s3 = new AWS.S3({
-            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-            region: process.env.AWS_REGION
-        });
+       // utility: generate HMAC hash
+       function generateHash(guestId, eventId) {
+       return crypto 
+       .createHmac('sha256', SECRET)
+       .update(`${guestId}:${eventId}`)
+       .digest('hex');
+       }
 
-        const secret = process.env.JWT_SECRET;
-
-        export const generateQRCode = async (req, res) => {
-    try {
-        const { guestId, eventId } = req.body;
-        const timestamp = Date.now();
-        const data = `${guestId}:${eventId}`;
-        const hmac = crypto.createHmac('sha256', secret)
-            .update(data)
-            .digest('hex');
-            const payload = JSON.stringify({
-                guestId,
-                eventId,
-                hmac,
-                timestamp: Date.now()
-            });
-
-            // generate qrcode buffer
-            const qrBuffer = await QRCode.toBuffer(payload);
-
-            // upload to AWS S3
-            const fileName = `qrcodes/guest${guestId}_event${eventId}_created${Date.now()}.png`;
-
-            const uploadParams = {
-                Bucket: process.env.AWS_S3_BUCKET_NAME,
-                Key: fileName,
-                Body: qrBuffer,
-                ContentType: 'image/png',
-                ACL: 'public-read' // Make the file publicly readable
-            };
-
-            const result = await s3.upload(uploadParams).promise();
-
-            res.status(201).json({
-                message: 'QR Code generated successfully',
-                qrCodeUrl: result.Location, // URL of the uploaded QR code
-                data: {
-                    guestId,
-                    eventId,
-                    hmac,
-                    timestamp: Date.now()
-                }
-            });
-        } catch (err) {
-            console.error('Error generating QR Code:', err);
-            res.status(500).json({ message: 'QRCode generation failed', error: err.message });
-        }
-    };
-export const alreadyCheckedIn = (guestId, eventId) => {
-    // This function should check if the guest has already checked in for the event.
-    // For now, we will return false to indicate that the guest has not checked in.
-    // In a real application, you would query your database to check the check-in status.
-    return false; // Placeholder implementation
-}
+       // Generate and Store QR code
