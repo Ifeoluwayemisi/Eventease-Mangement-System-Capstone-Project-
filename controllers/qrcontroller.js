@@ -124,3 +124,41 @@ export const validateQRCode = async (req, res) => {
        }
 
        // Generate and Store QR code
+
+       export const generateAndStoreQRCode = async (req, res) => {
+        try {
+            const { guestId, eventId, timestamp} = req.body;
+
+            if (!guestId || !eventId || !timestamp) {
+                return res.status(400).json({ error: 'Guest ID, Event ID, and timestamp are required' });
+            }
+
+            const hash = generateHash(guestId, eventId);
+            const qrData = JSON.stringify({
+                guestId,
+                eventId,
+                hmac: hash,
+                timestamp
+            });
+            const fileName = `${uuidv4()}.png`;
+            const filePath = path.join(__dirname, '..', 'qrcodes', fileName);
+
+            await QRCode.toFile(filePath, qrData);
+
+            return res.status(200).json({
+                message: 'QR Code generated and stored successfully',
+                qrpath: `/qrcodes/${fileName}`,
+                data: {
+                    guestId,
+                    eventId,
+                    hmac: hash,
+                    timestamp
+                }
+            });
+        } catch (error) {
+            console.error('Error generating and storing QR Code:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+       };
+
+       
