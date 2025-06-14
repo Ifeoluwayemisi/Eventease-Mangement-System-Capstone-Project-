@@ -1,23 +1,17 @@
-//Setup Sequelize connection using environment variables
-// This code connects to a MySQL database using Sequelize ORM.
+// Setup Sequelize connection using environment variables
 
-import { Sequelize } from 'sequelize'; // Import Sequelize from the sequelize package
-import dotenv from 'dotenv'; // Import dotenv to manage environment variables
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config(); // Make sure this runs before using process.env
 
+// Destructure environment variables for clarity
+const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT } = process.env;
 
-// Create a new Sequelize instance with database connection details
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-    port: process.env.DB_PORT || 3306, // Default MySQL port
-  }
-);
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+  host: DB_HOST,
+  dialect: 'mysql',
+  port: DB_PORT || 3306, // Default MySQL port
+});
 
 export default sequelize;
-// This code sets up a connection to a MySQL database using Sequelize ORM.

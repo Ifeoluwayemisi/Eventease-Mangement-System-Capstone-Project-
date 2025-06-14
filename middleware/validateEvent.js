@@ -1,4 +1,4 @@
-export const validateQRCodeInput = (req, res, next) => {
+export const validateEventId = (req, res, next) => {
     const { guestId, eventId, hmac, timestamp } = req.body;
 
     if (!guestId || !eventId || !hmac || !timestamp) {

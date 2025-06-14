@@ -1,6 +1,8 @@
 // sync.js
 import sequelize from './config/database.js';
 import './models/user.js'; 
+import Checkin from './models/checkin.js';
+import Guest from './models/guest.js';
 
 
 const syncDb = async () => {

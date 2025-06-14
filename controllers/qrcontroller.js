@@ -2,163 +2,138 @@ import crypto from 'crypto';
 import QRCode from 'qrcode';
 import fs from 'fs';
 import path from 'path';
-import {fileURLToPath} from 'url';
-import {v4 as uuidv4} from 'uuid';
-import AWS from 'aws-sdk'
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
+import dotenv from 'dotenv';
+import Guest from '../models/guest.js';
+import Event from '../models/event.js';
+import checkin from '../models/checkin.js';
+import Checkin from '../models/checkin.js';
 
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-//load secret key from environment variable
 const SECRET = process.env.JWT_SECRET || 'default_secret';
 
-//HMAC helper function
-const generateHMAC = (guestId, eventId) => {
-    const timestamp = Date.now();
-    const payload = `${guestId}:${eventId}:${timestamp}`;
-    return crypto.createHmac('sha256',SECRET).update(payload).digest('hex');
-};
+// Utility: generate HMAC from guest, event, timestamp
+function generateHMAC(guestId, eventId, timestamp) {
+  const payload = `${guestId}:${eventId}:${timestamp}`;
+  return crypto.createHmac('sha256', SECRET).update(payload).digest('hex');
+}
 
+// Generate QR Code and save to disk
 export const generateQRCode = async (req, res) => {
-    try {
-        const {guestID, eventID} = req.body;
+  try {
+    const { guestId, eventId } = req.body;
 
-        // Ensures IDs are present
-        if (!guestID || !eventID) {
-            return res.status(400).json({error: 'Guest ID and Event ID are required'});
-        }
-
-        // Generate HMAC
-        const payload = `${guestId} : ${eventID}`;
-        const hmac = crypto.createHmac('sha256', secret). update(payload).digest(`hex`);
-
-        //Encode the QR code data
-
-        const qrData = Json.stringify({
-            guestID,
-            eventID,
-            hmac,
-            timestamp: Date.now()
-        });
-        const qrImage = await QRCode.toDataURL(qrData);
-
-        const fileName = `${uuidv4()}.png`;
-        const filePath = path.join(__dirname, '..qrcodes', fileName);
-
-        await QRCode.toFile(filePath, qrPayload);
-
-        return res.status(201).json({
-            message: 'QR Code generated successfully',
-            file: `/qrcodes/${fileName}`,
-            data: {
-                guestID,
-                eventID,
-                hmac,
-                timestamp: Date.now()
-            }
-        });
-    } catch (error) {
-        console.error('Error generating QR Code:', error);
-        return res.status(500).json({error: 'Internal Server Error'});
+    if (!guestId || !eventId) {
+      return res.status(400).json({ error: 'Guest ID and Event ID are required' });
     }
+
+    const timestamp = Date.now();
+    const hmac = generateHMAC(guestId, eventId, timestamp);
+    const qrPayload = JSON.stringify({ guestId, eventId, timestamp, hmac });
+
+    const qrDir = path.join(__dirname, '..', 'qrcodes');
+    fs.mkdirSync(qrDir, { recursive: true });
+
+    const fileName = `qr-${guestId}-${eventId}.png`;
+    const qrImagePath = path.join(qrDir, fileName);
+
+    await QRCode.toFile(qrImagePath, qrPayload);
+
+    return res.status(201).json({
+      message: 'QR Code generated successfully',
+      filePath: `/qrcodes/${fileName}`,
+      data: { guestId, eventId, hmac, timestamp }
+    });
+  } catch (error) {
+    console.error('Error generating QR Code:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
+// Validate QR Code contents
 export const validateQRCode = async (req, res) => {
-    try {
-    const {guestID, eventID, hmac, timestamp} = req.body;
-        if (!guestId || !eventId || !hmac || !timestamp) {
+  try {
+    const { guestId, eventId, hmac, timestamp } = req.body;
+
+    if (!guestId || !eventId || !hmac || !timestamp) {
       return res.status(400).json({ error: 'Missing QR code data' });
-        }
-
-        // Recreate HMAC
-        const expectedHMAC = crypto
-        .createHMAC('sha256', SECRET)
-        .update(`${guestID}:${eventID}:${timestamp}`)
-        .digest('hex');
-
-        if (hmac !== expectedHMAC) {
-            return res.status(400).json({ error: 'Invalid QR code (tampered data)' });
-        }
-
-        // Check if the timestamp is within a reasonable range (e.g., 10 minutes)
-        const qrTimestamp = new Date(timestamp);
-        const currentTime = new Date();
-        const timeDifference = currentTime - qrTimestamp;
-        const differenceInMinutes = Math.floor(timeDifference / 60000);
-
-        // If the QR code timestamp is in the future, return an error
-        if (differenceInMinutes < 0) {
-            return res.status(400).json({ error: 'QR code timestamp is in the future' });
-        }
-        // If the QR code is older than 10 minutes, consider it expired
-        if (differenceInMinutes > 10) {
-            return res.status(400).json({ error: 'QR code expired' });
-        }
-
-        // if guest has already checked in, return error
-        if (alreadyCheckedIn(guestID, eventID)) {
-            return res.status(400).json({ error: 'Guest has already checked in' });
-        }
-
-        return res.status(200).json({
-             message: 'QR code is valid',
-             guestId,
-             eventId,
-             timestamp,
-             validatedat: new Date().toISOString() 
-            });
-    
-    } catch (err) {
-        console.error('Error validating QR Code:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
     }
+
+    const expectedHMAC = generateHMAC(guestId, eventId, timestamp);
+    if (hmac !== expectedHMAC) {
+      return res.status(400).json({ error: 'Invalid QR code (tampered data)' });
+    }
+
+    await Checkin.create({
+      guestId,
+      eventId,
+      checkedInAt: new Date(Number(timestamp))
+    });
+
+    const qrTimestamp = new Date(Number(timestamp));
+    const currentTime = new Date();
+    const timeDiff = Math.floor((currentTime - qrTimestamp) / 60000);
+  
+
+    if (timeDiff < 0) {
+      return res.status(400).json({ error: 'QR code timestamp is in the future' });
+    }
+
+    if (timeDiff > 10) {
+      return res.status(400).json({ error: 'QR code expired' });
+    }
+
+    return res.status(200).json({
+      message: 'QR code is valid',
+      guestId,
+      eventId,
+      timestamp,
+      validatedAt: currentTime.toISOString()
+    });
+  } catch (err) {
+    console.error('Error validating QR Code:', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
-       // utility: generate HMAC hash
-       function generateHash(guestId, eventId) {
-       return crypto 
-       .createHmac('sha256', SECRET)
-       .update(`${guestId}:${eventId}`)
-       .digest('hex');
-       }
+// Generate and store QR code, mark guest as checked in
+export const generateAndStoreQRCode = async (req, res) => {
+  try {
+    const { guestId, eventId, timestamp } = req.body;
 
-       // Generate and Store QR code
+    if (!guestId || !eventId || !timestamp) {
+      return res.status(400).json({ error: 'Guest ID, Event ID, and timestamp are required' });
+    }
 
-       export const generateAndStoreQRCode = async (req, res) => {
-        try {
-            const { guestId, eventId, timestamp} = req.body;
+    const guest = await Guest.findByPk(guestId);
+    const event = await Event.findByPk(eventId);
 
-            if (!guestId || !eventId || !timestamp) {
-                return res.status(400).json({ error: 'Guest ID, Event ID, and timestamp are required' });
-            }
+    if (!guest || !event) {
+      return res.status(404).json({ error: 'Guest or Event not found' });
+    }
 
-            const hash = generateHash(guestId, eventId);
-            const qrData = JSON.stringify({
-                guestId,
-                eventId,
-                hmac: hash,
-                timestamp
-            });
-            const fileName = `${uuidv4()}.png`;
-            const filePath = path.join(__dirname, '..', 'qrcodes', fileName);
+    guest.checkedIn = true;
+    await guest.save();
 
-            await QRCode.toFile(filePath, qrData);
+    const hmac = generateHMAC(guestId, eventId, timestamp);
+    const qrData = JSON.stringify({ guestId, eventId, hmac, timestamp });
 
-            return res.status(200).json({
-                message: 'QR Code generated and stored successfully',
-                qrpath: `/qrcodes/${fileName}`,
-                data: {
-                    guestId,
-                    eventId,
-                    hmac: hash,
-                    timestamp
-                }
-            });
-        } catch (error) {
-            console.error('Error generating and storing QR Code:', error);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }
-       };
+    const fileName = `${uuidv4()}.png`;
+    const filePath = path.join(__dirname, '..', 'qrcodes', fileName);
 
-       
+    await QRCode.toFile(filePath, qrData);
+
+    return res.status(200).json({
+      message: 'QR Code generated and stored successfully',
+      qrPath: `/qrcodes/${fileName}`,
+      data: { guestId, eventId, hmac, timestamp }
+    });
+  } catch (error) {
+    console.error('Error generating and storing QR Code:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
