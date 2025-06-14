@@ -4,7 +4,7 @@ import userRoutes from './userRoutes.js'; // Import user routes from userRoutes.
 
 const router = express.Router(); // Create a new router instance
 
-router.use('/users', userRoutes); // Use user routes for any requests to /users
+router.post('/users', userRoutes); // Use user routes for any requests to /users
 // You can add more routes here as needed
 //  Example: router.use('/events', eventRoutes);
 

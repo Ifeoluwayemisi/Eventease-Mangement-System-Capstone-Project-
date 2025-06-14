@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use('/api', routes);
 
-const PORT = process.env.PORT || 3306; // Set the port from environment variables or default to 3306
+const PORT = process.env.PORT || 5000; // Set the port from environment variables or default to 3306
 
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
