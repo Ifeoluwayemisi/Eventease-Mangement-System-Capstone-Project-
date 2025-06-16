@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-
+import { Op } from 'sequelize';
 import Guest from '../models/guest.js';
 import Event from '../models/event.js';
 import Checkin from '../models/checkin.js';
@@ -60,9 +60,13 @@ export const validateQRCode = async (req, res) => {
       return res.status(400).json({ error: 'Invalid HMAC - tampered data' });
     }
 
-    const scannedAt = new Date();
-    const qrTimestamp = new Date(Number(timestamp));
-    const minutesElapsed = (scannedAt - qrTimestamp) / (1000 * 60);
+    const diffInMs = scannedAt - qrTimestamp;
+const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+
+if (diffInMs > threeDaysInMs) {
+  return res.status(400).json({ error: 'QR code expired' });
+}
+
 
     if (minutesElapsed > 10) {
       return res.status(400).json({ error: 'QR code expired' });
@@ -90,14 +94,57 @@ export const validateQRCode = async (req, res) => {
   }
 };
 
-// ✅ GET /checkin → View all check-ins
+// GET /checkin → Filtered view
 export const viewAllCheckins = async (req, res) => {
   try {
-    const all = await Checkin.findAll({ order: [['checkedInAt', 'DESC']] });
-    res.status(200).json(all);
+    const { guestId, eventId, date } = req.query;
+
+    const where = {};
+    if (guestId) where.guestId = guestId;
+    if (eventId) where.eventId = eventId;
+
+    if (date) {
+      const start = new Date(date);
+      const end = new Date(date);
+      end.setDate(end.getDate() + 1);
+      where.checkedInAt = {
+        [Op.gte]: start,
+        [Op.lt]: end,
+      };
+    }
+
+    const checkins = await Checkin.findAll({
+      where,
+      order: [['checkedInAt', 'DESC']],
+      include: [
+        { model: Guest, attributes: ['name', 'email'] },
+        { model: Event, attributes: ['title', 'location'] },
+      ],
+    });
+
+    res.status(200).json(checkins);
   } catch (err) {
-    console.error('Check-in fetch error:', err);
-    res.status(500).json({ error: 'Server error fetching check-ins' });
+    console.error('Check-in filter error:', err);
+    res.status(500).json({ error: 'Server error filtering check-ins' });
+  }
+};
+
+export const getEventCheckins = async (req, res) => {
+  const { eventId } = req.params;
+
+  try {
+    console.log('Getting check-ins for event:', eventId); // Debug log
+
+    const checkins = await Checkin.findAll({
+      where: { eventId },
+      include: [Guest],
+      order: [['checkedInAt', 'DESC']],
+    });
+
+    res.status(200).json(checkins);
+  } catch (error) {
+    console.error('Error fetching check-ins by event:', error); // Detailed error log
+    res.status(500).json({ error: 'Server error' });
   }
 };
 

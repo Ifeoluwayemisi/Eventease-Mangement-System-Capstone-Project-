@@ -9,7 +9,29 @@ router.get('/', async (req, res) => {
   res.json(guests);
 });
 
+/**
+ * @swagger
+ * tags:
+ *   name: Guests List
+ *   description: Get Guest list by event endpoints
+ */
 
-router.get('/event/:eventId', getGuestsByEvent); // GET /guests/event/1
+/**
+ * @swagger
+ * /api/guests/event/{eventId}:
+ *   get:
+ *     summary: Get guests registered for a specific event
+ *     tags: [Guests Lists]
+ *     parameters:
+ *       - in: path
+ *         name: eventId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of guests for the event
+ */
+router.get('/event/:eventId', getGuestsByEvent);
 
 export default router;

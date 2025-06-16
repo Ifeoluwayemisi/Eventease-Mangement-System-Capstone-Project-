@@ -23,4 +23,5 @@ const Checkin = sequelize.define('Checkin', {
   timestamps: true // includes createdAt and updatedAt
 });
 
+
 export default Checkin;

@@ -3,6 +3,7 @@ import routes from './routes/index.js';
 import dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import checkinRoutes from './routes/checkin.js';
+import {setupSwagger} from './swagger.js';
 
 dotenv.config();
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/qrcodes', express.static('qrcodes'));
 app.use('/api', routes);
 app.use('/api/checkin', checkinRoutes);
+setupSwagger(app); //enable Swagger
 
 sequelize.sync({ alter: true }).then(() => {
   app.listen(process.env.PORT, () => {
