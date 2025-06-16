@@ -22,7 +22,7 @@ export const createGuest = async (req, res) => {
 
   const hashed_password = bcrypt.hashSync(password, 10);
 
-  const guest = await Guest.create({ email, name ,phoneNumber, password: hashed_password });
+  const guest = await Guest.create({ email, name , password: hashed_password });
   
   if (!guest) {
     return res.status(400).json({

@@ -2,6 +2,9 @@ openapi: 3.0.0
 info:
   title: Event API
   version: 1.0.0
+  description: endpoints for events and guests
+servers:
+  - url: http://localhost:3000
 paths:
   /api/events:
     post:
@@ -21,6 +24,52 @@ paths:
       responses:
         201:
           description: Created
+  /guests:
+    post:
+      summary: Add a new guest to an event
+      tags:
+        - Guests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - eventId
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  example: johndoe@email.com
+                phone:
+                  type: string
+                  example: "+2348012345678"
+                eventId:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Guest added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  eventId:
+                    type: integer
+        '400':
+          description: Invalid input
   /api/guests/{eventId}:
     get:
       summary: Get paginated guests
@@ -41,26 +90,110 @@ paths:
       responses:
         200:
           description: OK
+  /guests:
+    get:
+      summary: Retrieve all guests
+      tags:
+        - Guests
+      responses:
+        '200':
+          description: List of all guests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    eventId:
+                      type: integer       
+  /analytics/events/total:
+    get:
+      summary: Get total number of events hosted
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Total number of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalEvents:
+                    type: integer
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
+  /analytics/events/upcoming:
+    get:
+      summary: Get upcoming events count
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Count of upcoming events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upcomingEvents:
+                    type: integer
+                   
+                   
+  /events/{id}:
+    delete:
+      summary: Delete an event by ID
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the event to delete
+      responses:
+        '200':
+          description: Event successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Event deleted successfully
+        '404':
+          description: Event not found
+  /guests/{id}:
+    delete:
+      summary: Delete a guest by ID
+      tags:
+        - Guests
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the guest to delete
+      responses:
+        '200':
+          description: Guest successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Guest deleted successfully
+        '404':
+          description: Guest not found
+  
