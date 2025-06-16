@@ -6,11 +6,17 @@ import {
   getEvent,
   updateEvent,
   deleteEvent,
+  getNumberEvent,
+  getUpcomingEvent,
 } from "../controllers/eventController.js";
 
 const router = express.Router();
 
 router.post("/events", createEventValidator, validationInputMiddleware, createEvent);
+
+router.get("/analytics/events/total", getNumberEvent);
+
+router.get("/analytics/events/upcoming", getUpcomingEvent)
 
 router.get("/events", getAllEvent);
 

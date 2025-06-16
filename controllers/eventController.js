@@ -1,10 +1,12 @@
 import Event from "../models/event.js";
+import { Op } from 'sequelize';
+
 
 // Create a new event
 export const createEvent = async (req, res) => {
-  const { title, date, location, descrpition, } = req.body;
+  const { title, date, location, description, } = req.body;
 
-  const book = await Event.create({ title, date, location,descrpition, organizerId});
+  const Event = await Event.create({ title, date, location, description, organizerId});
 
   if (!Event) {
     return res.status(400).json({
@@ -21,7 +23,40 @@ export const createEvent = async (req, res) => {
   });
 };
 
-//get all Events
+//get event number
+export const getNumberEvent = async (req, res) => {
+  try{
+    const count = await Event.count();
+    res.json({ numberEvents: count});
+  }
+  catch (error)
+  { 
+    res.status(500).json({ error: error.message});
+  }
+};
+
+//get upcoming event
+
+export const getUpcomingEvent = async (req, res) => {
+  try 
+  {
+    const Today = new Date()
+    const count = await Event.count({
+      where: {
+        date: {
+          [Op.gt]: Today
+        }
+      }
+    });
+    res.json({ upcomingEvents: count });
+  } catch (error)
+  { 
+    res.status(500).json({ error: ' Error counting upcoming events'});
+  }
+
+};
+
+  //get all Events
 export const getAllEvent = async (req, res) => {
   const LIMIT = 10;
   const page = parseInt(req.query.page) || 1;

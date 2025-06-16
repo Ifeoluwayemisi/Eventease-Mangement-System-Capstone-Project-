@@ -20,7 +20,7 @@ export const createGuest = async (req, res) => {
     });
   }
 
-  const hashed_password = await bcrypt.hashSync(password, 10);
+  const hashed_password = bcrypt.hashSync(password, 10);
 
   const guest = await Guest.create({ email, name ,phoneNumber, password: hashed_password });
   
@@ -139,6 +139,26 @@ export const getAllGuest = async (req, res) => {
     data: Guests,
   });
 };
+
+export const getCheckedInGuestbyEvents = async (req, res) => {
+  try{
+    const { eventId } = req.params;
+    const checkedInCount = await Guest.count({
+      where: {
+        eventId,
+        checkedIn: true
+      }
+    });
+    
+    res.json({ eventId, checkedInCount});
+  }
+  
+  catch (error) {
+    res.status(500).json({ error: 'Error fetching checked-in guests'});
+
+  }
+};
+
 
 // get a single guest
 export const getGuest = async (req, res) => {
