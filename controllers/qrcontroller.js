@@ -60,8 +60,11 @@ export const validateQRCode = async (req, res) => {
       return res.status(400).json({ error: 'Invalid HMAC - tampered data' });
     }
 
+    const scannedAt = new Date();
+    const qrTimestamp = new Date(number(timestamp));
     const diffInMs = scannedAt - qrTimestamp;
-const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+    const minutesElapsed = diffInMs / (1000 * 60);
+    const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
 
 if (diffInMs > threeDaysInMs) {
   return res.status(400).json({ error: 'QR code expired' });
