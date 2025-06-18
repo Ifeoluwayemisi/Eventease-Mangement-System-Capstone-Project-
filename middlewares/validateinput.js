@@ -1,37 +1,19 @@
-// eventRoutes.js
-import express from 'express';
+
 import { body, query, param, validationResult } from 'express-validator';
 import { createEvent } from '../controllers/eventController.js';
 
 
 export const createEventValidator = [
-  body('title')
-  .notEmpty()
-  .withMessage('Title is required')
-  .isLength({min:10}).withMessage('Event title must be at least 10 characters long'),
- 
-  body('startsAt').isISO8601().notEmpty().withMessage('Start date is required').custom((value, { req }) => {
-      if (dayjs(value).isBefore(dayjs())) {
-        throw new Error('Start time cannot be in the past');
-      }
-      return true;
-    }),
-,
-   body('endAt')
-    .isISO8601()
-    .withMessage('End time must be a valid date')
-    .custom((value, { req }) => {
-      if (dayjs(value).isBefore(dayjs(req.body.startTime))) {
-        throw new Error('End time must be after start time');
-      }
-      return true;
-    }),
-
-
+  body('title').notEmpty().withMessage('Title is required'),
+  body('eventType').notEmpty().withMessage('Event type is required'),
+  body('clientName').notEmpty().withMessage('Client name is required'),
+  body('description').notEmpty().withMessage('Description is required'),
+  body('date').isDate().withMessage('Date must be valid (YYYY-MM-DD)'),
+  body('time').notEmpty().withMessage('Time is required'),
   body('location').notEmpty().withMessage('Location is required'),
-  body('description').notEmpty().withMessage('The decription is required')
-
-]
+  body('guestLimit').isInt({ min: 1 }).withMessage('Guest limit must be a positive number'),
+  body('organizerId').isInt().withMessage('Organizer ID must be a valid number')
+];
 
 
 export const createGuestValidator = [
@@ -48,9 +30,10 @@ export const validationInputMiddleware = (req, res, next) => {
 
         return res.status(422).json({
             status: false,
-            message: "Validation failed",
+            message: "Validation failed. Try again",
             errors: errors.array(),
         });
-    }
+    };
+
     next();
 }

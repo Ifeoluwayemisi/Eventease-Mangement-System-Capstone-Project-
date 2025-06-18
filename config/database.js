@@ -11,7 +11,7 @@ dotenv.config(); // Load environment variables from .env file
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'eventease_db',
   process.env.DB_USER || 'root',
-  process.env.DB_PASSWORD || 'yourpassword',
+  process.env.DB_PASSWORD || 'ILOVEmoney123@',
   {
     host: process.env.DB_HOST || 'localhost', // Default to localhost if not set,
     dialect: 'mysql',

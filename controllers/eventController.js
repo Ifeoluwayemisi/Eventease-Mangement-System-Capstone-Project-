@@ -4,24 +4,52 @@ import { Op } from 'sequelize';
 
 // Create a new event
 export const createEvent = async (req, res) => {
-  const { title, date, location, description, } = req.body;
+ try {
+    const {
+      title,
+      eventType,
+      clientName,
+      description,
+      date,
+      time,
+      location,
+      guestLimit,
+      organizerId
+    } = req.body;
 
-  const Event = await Event.create({ title, date, location, description, organizerId});
 
-  if (!Event) {
-    return res.status(400).json({
-      status: false,
-      message: "Could not create an Event. Try again.",
-      data: null,
+    const image = req.file ? req.file.filename : null;
+
+    const Newevent = await Event.create({
+      title,
+      eventType,
+      clientName,
+      description,
+      date,
+      time,
+      location,
+      guestLimit,
+      image,
+      organizerId
     });
-  }
 
-  return res.status(201).json({
-    status: true,
-    message: "Event was created successfully. ",
-    data: Event,
-  });
+    if (!Newevent) {
+      return res.status(400).json({
+        status: false,
+        message: 'Could not create the event',
+        data: [],
+      });
+    }
+
+    res.status(201).json({ status: true, message: 'Event created', data: Newevent });
+
+
+  } catch (error) {
+    console.error("Event creation error");
+    res.status(500).json({ status: false, message: 'Server error, try again.', error: error.message });
+  }
 };
+
 
 //get event number
 export const getNumberEvent = async (req, res) => {
@@ -56,33 +84,39 @@ export const getUpcomingEvent = async (req, res) => {
 
 };
 
-  //get all Events
+ // Get all events with pagination
 export const getAllEvent = async (req, res) => {
-  const LIMIT = 10;
-  const page = parseInt(req.query.page) || 1;
-  const offset = (page - 1) * LIMIT;
-  const Events = await Event.findAndCountAll({ limit: LIMIT, offset });
-  // const Events = await Event.findAll();
+  try {
+    // Parse pagination query parameters
+    const page = parseInt(req.query.page) || 1; // default to page 1
+    const limit = parseInt(req.query.limit) || 10; // default to 10 items per page
+    const offset = (page - 1) * limit;
 
-  if (Events.count === 0) {
-    return res.status(400).json({
+    // Get total count and paginated events
+    const { count, rows } = await Event.findAndCountAll({
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']], // optional: newest first
+    });
+
+    return res.status(200).json({
+      status: true,
+      message: "Events fetched successfully.",
+      currentPage: page,
+      totalPages: Math.ceil(count / limit),
+      totalEvents: count,
+      data: rows,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
       status: false,
-      message: "Could not get the events.",
-      data: [],
+      message: "Server error while fetching events.",
+      error: error.message,
     });
   }
-
-  return res.status(200).json({
-    status: true,
-    message: "Events retrieved successfully. ",
-    data: {
-      Events: Events.rows,
-      total: Events.count,
-      pages: Math.ceil(Events.count / LIMIT),
-      page,
-    },
-  });
 };
+
 
 // get a particular event
 export const getEvent = async (req, res) => {
@@ -103,39 +137,75 @@ export const getEvent = async (req, res) => {
   });
 };
 
-// update an event
+// Update an event
 export const updateEvent = async (req, res) => {
-  const { id } = req.params;
-  const event = await Event.findByPk(Number(id));
+  try {
+    // Get the event ID from params
+    const { id } = req.params;
 
-  if (!event) {
-    return res.status(400).json({
+    // Check if event exists
+    const event = await Event.findByPk(Number(id));
+    if (!event) {
+      return res.status(404).json({
+        status: false,
+        message: "Event not found.",
+        data: [],
+      });
+    }
+
+    // Update the event with new data from req.body
+    await event.update(req.body);
+
+    // Return success response
+    return res.status(200).json({
+      status: true,
+      message: "Event updated successfully.",
+      data: event,
+    });
+  } catch (error) {
+    // Catch any error that occurs and respond with 500
+    return res.status(500).json({
       status: false,
-      message: "Could not get the event. ",
-      data: [],
+      message: "Server error while updating event.",
+      error: error.message,
     });
   }
-
-  await event.update(req.body);
-
-  return res.status(200).json({
-    status: true,
-    message: "Event updated successfully. ",
-    data: Event,
-  });
-
- 
 };
 
-// delete an event
+// Delete an event
 export const deleteEvent = async (req, res) => {
-  const { id } = req.params;
-  const event = await Event.findByPk(Number(id));
-  await event.destroy();
+  try {
+    // Get the event ID from URL params
+    const { id } = req.params;
 
-  return res.status(200).json({
-    status: true,
-    message: "Event deleted successfully. ",
-    data: [],
-  });
+    // Look for the event
+    const event = await Event.findByPk(Number(id));
+
+    // If event not found, return 404
+    if (!event) {
+      return res.status(404).json({
+        status: false,
+        message: "Event not found.",
+        data: [],
+      });
+    }
+
+    // Delete the event
+    await event.destroy();
+
+    // Return success response
+    return res.status(200).json({
+      status: true,
+      message: "Event deleted successfully.",
+      data: [],
+    });
+
+  } catch (error) {
+    // Handle unexpected errors
+    return res.status(500).json({
+      status: false,
+      message: "Server error while deleting event.",
+      error: error.message,
+    });
+  }
 };

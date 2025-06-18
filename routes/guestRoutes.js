@@ -4,19 +4,19 @@ import { createGuestValidator, validationInputMiddleware } from "../middlewares/
 
 const router = express.Router();
 
-router.post("/:eventId", createGuestValidator, validationInputMiddleware, createGuest);
+router.post("/event/:eventId", createGuestValidator, validationInputMiddleware, createGuest);
 
-router.get("/:eventId", getAllGuest);
+router.get("/event/:eventId", getAllGuest);
 
-router.get("/guests/:guestId", getGuest);
+router.get("/:guestId", getGuest);
 
-router.get("/analytics/guests/event/:eventId/checkedin", getCheckedInGuestbyEvents);
+router.get("/analytics/:eventId/checkedin", getCheckedInGuestbyEvents);
 
 router.post("/login", loginGuest);
 
-router.put("/guests/:guestId", updateGuest);
+router.put("/:guestId", updateGuest);
 
-router.delete("/guests/:guestId", deleteGuest);
+router.delete("/:guestId", deleteGuest);
 
 
 export default router;

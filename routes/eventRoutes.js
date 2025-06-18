@@ -1,4 +1,5 @@
 import express from "express";
+import { upload } from '../config/storage.js';
 import { createEventValidator, validationInputMiddleware } from "../middlewares/validateinput.js";
 import {
   createEvent,
@@ -12,18 +13,18 @@ import {
 
 const router = express.Router();
 
-router.post("/events", createEventValidator, validationInputMiddleware, createEvent);
+router.post("/create",upload.single('image'), createEventValidator, validationInputMiddleware, createEvent);
 
-router.get("/analytics/events/total", getNumberEvent);
+router.get("/analytics/total", getNumberEvent);
 
-router.get("/analytics/events/upcoming", getUpcomingEvent)
+router.get("/analytics/upcoming", getUpcomingEvent)
 
-router.get("/events", getAllEvent);
+router.get("/", getAllEvent);
 
-router.get("/events/:eventId", getEvent);
+router.get("/:eventId", getEvent);
 
-router.put("/events/:eventId", updateEvent);
+router.put("/:eventId", upload.single('image'), createEventValidator, validationInputMiddleware, updateEvent);
 
-router.delete("/events/:eventId", deleteEvent);
+router.delete("/:eventId", deleteEvent);
 
 export default router;
