@@ -45,7 +45,7 @@ app.use('/api/users', userRoutes);
 // });
 
 // Start server
-// const PORT = process.env.PORT || 3306;
+// const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
