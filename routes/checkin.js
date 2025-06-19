@@ -106,4 +106,6 @@ router.get('/', viewAllCheckins);
 router.get('/event/:eventId/checkins', getEventCheckins);
 
 
+router.get('/checkin', viewAllCheckins);
+
 export default router;

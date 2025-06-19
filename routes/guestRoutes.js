@@ -1,5 +1,7 @@
 import express from 'express';
 import { getGuestsByEvent } from '../controllers/guestController.js';
+import Guest from '../models/guest.js';
+
 
 const router = express.Router();
 

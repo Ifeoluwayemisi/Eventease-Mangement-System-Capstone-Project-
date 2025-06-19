@@ -6,4 +6,9 @@ const Guest = sequelize.define('Guest', {
   email: DataTypes.STRING,
 }, { timestamps: true });
 
+// Associations
+Guest.associate = (models) => {
+  Guest.hasMany(models.Checkin, { foreignKey: 'guestId' });
+};
+
 export default Guest;

@@ -20,8 +20,13 @@ const Checkin = sequelize.define('Checkin', {
     defaultValue: DataTypes.NOW
   }
 }, {
-  timestamps: true // includes createdAt and updatedAt
+  timestamps: true
 });
 
+// Association
+Checkin.associate = (models) => {
+  Checkin.belongsTo(models.Guest, { foreignKey: 'guestId' });
+  Checkin.belongsTo(models.Event, { foreignKey: 'eventId' });
+};
 
 export default Checkin;

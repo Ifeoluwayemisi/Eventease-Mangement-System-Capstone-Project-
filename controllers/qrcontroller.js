@@ -5,9 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { Op } from 'sequelize';
-import Guest from '../models/guest.js';
-import Event from '../models/event.js';
-import Checkin from '../models/checkin.js';
+import { Guest, Event, Checkin } from '../models/index.js';
 
 dotenv.config();
 
@@ -61,7 +59,7 @@ export const validateQRCode = async (req, res) => {
     }
 
     const scannedAt = new Date();
-    const qrTimestamp = new Date(number(timestamp));
+    const qrTimestamp = new Date(Number(timestamp));
     const diffInMs = scannedAt - qrTimestamp;
     const minutesElapsed = diffInMs / (1000 * 60);
     const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
@@ -71,12 +69,14 @@ if (diffInMs > threeDaysInMs) {
 }
 
 
-    if (minutesElapsed > 10) {
-      return res.status(400).json({ error: 'QR code expired' });
-    }
+  
 
     const guest = await Guest.findByPk(guestId);
     const event = await Event.findByPk(eventId);
+
+       console.log("guest:", guest); // null?
+       console.log("event:", event); // null?
+
     if (!guest || !event) {
       return res.status(404).json({ error: 'Guest or Event not found' });
     }
