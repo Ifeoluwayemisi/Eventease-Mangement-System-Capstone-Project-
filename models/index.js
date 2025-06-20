@@ -7,7 +7,6 @@ import Event from './event.js'; // Import the Event model
 
 const db = {
   sequelize,
-  User,
 };
 
 
@@ -18,3 +17,5 @@ Event.belongsTo(User, { foreignKey: 'organizerId'});
 User.hasMany(Event, {foreignKey: ' organizerId'});
 
 export { db, Event, Guest,};
+
+

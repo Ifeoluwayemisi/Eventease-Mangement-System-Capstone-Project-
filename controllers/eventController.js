@@ -176,10 +176,10 @@ export const updateEvent = async (req, res) => {
 export const deleteEvent = async (req, res) => {
   try {
     // Get the event ID from URL params
-    const { id } = req.params;
+    const { eventid } = req.params.id;
 
     // Look for the event
-    const event = await Event.findByPk(Number(id));
+    const event = await Event.findByPk(eventid);
 
     // If event not found, return 404
     if (!event) {

@@ -12,13 +12,15 @@ export const createEventValidator = [
   body('time').notEmpty().withMessage('Time is required'),
   body('location').notEmpty().withMessage('Location is required'),
   body('guestLimit').isInt({ min: 1 }).withMessage('Guest limit must be a positive number'),
-  body('organizerId').isInt().withMessage('Organizer ID must be a valid number')
+  param('organizerId').isInt().withMessage('Organizer ID must be a valid number')
 ];
 
 
 export const createGuestValidator = [
     body('name').notEmpty().withMessage('Guest name is required'),
     body('email').isEmail().withMessage('Provide a vaild Email').normalizeEmail(),
+    body('guestType').notEmpty().withMessage('Guest type is required'),
+    body('phoneNumber').notEmpty().withMessage('Please input a phone number'),
     param('eventId').isInt().withMessage('A valid event id is required'),
 ]
 

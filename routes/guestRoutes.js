@@ -1,22 +1,25 @@
 import express from "express";
-import { createGuest, loginGuest, deleteGuest, updateGuest, getAllGuest, getGuest, getCheckedInGuestbyEvents, } from "../controllers/guestController.js";
+import { createGuest, getGuestsByEvent, deleteGuest, updateGuest, getGuestById, } from "../controllers/guestController.js";
 import { createGuestValidator, validationInputMiddleware } from "../middlewares/validateinput.js";
 
 const router = express.Router();
 
-router.post("/event/:eventId", createGuestValidator, validationInputMiddleware, createGuest);
+// Create a new guest
+router.post('/create', createGuestValidator, validationInputMiddleware, createGuest);
 
-router.get("/event/:eventId", getAllGuest);
+// Get all guests
+router.get('/', authenticateOrganizer, getAllGuests);
 
-router.get("/:guestId", getGuest);
+// Get guests by event ID (with pagination)
+router.get('/event/:eventId', authenticateOrganizer, getGuestsByEvent);
 
-router.get("/analytics/:eventId/checkedin", getCheckedInGuestbyEvents);
+// Get single guest by ID
+router.get('/:guestId', authenticateOrganizer, getGuestById);
 
-router.post("/login", loginGuest);
+// Update a guest
+router.put('/:guestId', createGuestValidator, validationInputMiddleware, updateGuest);
 
-router.put("/:guestId", updateGuest);
-
-router.delete("/:guestId", deleteGuest);
-
+// Delete a guest
+router.delete('/:guestId', authenticateOrganizer, deleteGuest);
 
 export default router;

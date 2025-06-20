@@ -13,10 +13,6 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Load Swagger YAML
-//const swaggerDocument = YAML.load('./swagger.yaml');
-// Serve Swagger UI
-//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/api', routes);
 
@@ -46,7 +42,6 @@ const PORT = process.env.PORT || 5000; // Set the port from environment variable
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
-    //console.log(` Swagger UI available at http://localhost:${port}/api-docs`);
   
   });
 });
