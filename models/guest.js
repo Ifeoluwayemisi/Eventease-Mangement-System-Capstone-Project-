@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db.js'; // your DB connection
+import sequelize from '../config/database.js'; // your DB connection
 import Event from './event.js'; // assuming event model already exists
 
 const Guest = sequelize.define('Guest', {

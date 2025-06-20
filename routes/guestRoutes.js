@@ -7,19 +7,19 @@ const router = express.Router();
 // Create a new guest
 router.post('/create', createGuestValidator, validationInputMiddleware, createGuest);
 
-// Get all guests
-router.get('/', authenticateOrganizer, getAllGuests);
+// // Get all guests
+// router.get('/', getAllGuests);
 
 // Get guests by event ID (with pagination)
-router.get('/event/:eventId', authenticateOrganizer, getGuestsByEvent);
+router.get('/event/:eventId' , getGuestsByEvent);
 
 // Get single guest by ID
-router.get('/:guestId', authenticateOrganizer, getGuestById);
+router.get('/:guestId', getGuestById);
 
 // Update a guest
 router.put('/:guestId', createGuestValidator, validationInputMiddleware, updateGuest);
 
 // Delete a guest
-router.delete('/:guestId', authenticateOrganizer, deleteGuest);
+router.delete('/:guestId', deleteGuest);
 
 export default router;
