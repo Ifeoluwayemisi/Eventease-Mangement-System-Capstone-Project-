@@ -20,3 +20,6 @@ sequelize.sync({ alter: true }).then(() => {
     console.log(`Server running at http://localhost:${process.env.PORT}`);
   });
 });
+
+
+export default app;
