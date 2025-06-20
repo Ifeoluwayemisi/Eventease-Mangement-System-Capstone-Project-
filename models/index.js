@@ -33,7 +33,7 @@ Event.belongsToMany(Guest, {
   otherKey: 'guestId',
 });
 
-Guest.belongsToMany( Events,{
+Guest.belongsToMany( Event,{
   through: Checkin,
   foreignKey: 'guestId',
   otherKey: 'eventId',
