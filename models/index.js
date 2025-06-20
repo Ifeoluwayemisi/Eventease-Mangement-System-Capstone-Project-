@@ -1,7 +1,7 @@
 import sequelize from '../config/database.js';
 import User from './user.js';
 import Guest from './guest.js';
-import Event from './event.js';
+// import Event from './event.js';
 import Checkin from './checkin.js';
 
 const db = {
@@ -14,23 +14,23 @@ const db = {
 
 //Associations
 Guest.hasMany(Checkin, { foreignKey: 'guestId' });
-Event.hasMany(Checkin, { foreignKey: 'eventId' });
+// Event.hasMany(Checkin, { foreignKey: 'eventId' });
 
 Checkin.belongsTo(Guest, { foreignKey: 'guestId' });
-Checkin.belongsTo(Event, { foreignKey: 'eventId' });
+// Checkin.belongsTo(Event, { foreignKey: 'eventId' });
 
 // Many-to-many:
-Event.belongsToMany(Guest, {
+/*Event.belongsToMany(Guest, {
   through: Checkin,
   foreignKey: 'eventId',
   otherKey: 'guestId',
-});
+});*/
 
-Guest.belongsToMany(Event, {
+/*Guest.belongsToMany({
   through: Checkin,
   foreignKey: 'guestId',
   otherKey: 'eventId',
-});
+});*/
 
-export { User, Guest, Event, Checkin };
+export { User, Guest, Checkin };
 export default db;

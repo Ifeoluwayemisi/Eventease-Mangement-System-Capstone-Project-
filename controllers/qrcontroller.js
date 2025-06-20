@@ -5,7 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { Op } from 'sequelize';
-import { Guest, Event, Checkin } from '../models/index.js';
+import { Guest, Checkin } from '../models/index.js';
 
 dotenv.config();
 
@@ -72,12 +72,12 @@ if (diffInMs > threeDaysInMs) {
   
 
     const guest = await Guest.findByPk(guestId);
-    const event = await Event.findByPk(eventId);
+    // const event = await Event.findByPk(eventId);
 
        console.log("guest:", guest); // null?
-       console.log("event:", event); // null?
+    //   console.log("event:", event); // null?
 
-    if (!guest || !event) {
+    if (!guest) {
       return res.status(404).json({ error: 'Guest or Event not found' });
     }
 

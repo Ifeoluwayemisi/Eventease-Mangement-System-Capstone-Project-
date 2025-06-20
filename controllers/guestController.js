@@ -1,5 +1,5 @@
 import Guest from '../models/guest.js';
-import Event from '../models/event.js';
+// import Event from '../models/event.js';
 
 export const getGuestsByEvent = async (req, res) => {
   try {
