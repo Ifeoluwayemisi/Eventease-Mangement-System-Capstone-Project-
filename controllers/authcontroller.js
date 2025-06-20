@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { Op } from 'sequelize';
-import User from '../models/User.js';
+import User from '../models/user.js';
 import { sendResetPasswordEmail } from '../services/emailService.js';
 
 const generateToken = (id) => {
   const expiresIn = process.env.JWT_EXPIRATION || '1d';
-  console.log('🧪 Token Expiry:', expiresIn); // Add this for debugging
+  console.log(' Token Expiry:', expiresIn); // Add this for debugging
 
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn,

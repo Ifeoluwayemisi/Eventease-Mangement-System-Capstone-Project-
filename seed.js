@@ -1,37 +1,52 @@
 // seed.js
+import dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import Guest from './models/guest.js';
 import Event from './models/event.js';
 import Checkin from './models/checkin.js';
 
-async function seedDatabase() {
+dotenv.config();
+
+const seedData = async () => {
   try {
-    await sequelize.sync({ force: true }); // Clears all existing data and recreates tables
+    await sequelize.sync({ force: true }); // ⚠️ force: true will drop all tables
 
-    const guest1 = await Guest.create({
-      name: 'Jane Doe',
-      email: 'jane@example.com'
-    });
+    const guests = await Guest.bulkCreate([
+      { name: 'Ada Lovelace', email: 'ada@tech.com' },
+      { name: 'Alan Turing', email: 'alan@code.com' },
+      { name: 'Grace Hopper', email: 'grace@navy.mil' },
+      { name: 'Linus Torvalds', email: 'linus@linux.org' },
+    ]);
 
-    const guest2 = await Guest.create({
-      name: 'John Smith',
-      email: 'john@example.com'
-    });
+    const events = await Event.bulkCreate([
+      {
+        title: 'AI Developers Conference',
+        location: 'Lagos',
+        date: new Date(Date.now() + 86400000),
+      },
+      {
+        title: 'Cybersecurity Bootcamp',
+        location: 'Abuja',
+        date: new Date(Date.now() + 2 * 86400000),
+      },
+      {
+        title: 'Open Source Summit',
+        location: 'Port Harcourt',
+        date: new Date(Date.now() + 3 * 86400000),
+      },
+    ]);
 
-    const event1 = await Event.create({
-      name: 'Dev Launch Event',
-      location: 'Conference Hall A',
-      date: new Date()
-    });
+    console.log('\n Guests created:');
+    guests.forEach((g) => console.log(`ID: ${g.id}, Name: ${g.name}`));
 
-    console.log('Guests and Event created');
-    console.log({ guest1, guest2, event1 });
+    console.log('\nEvents created:');
+    events.forEach((e) => console.log(`ID: ${e.id}, Title: ${e.title}`));
 
-    process.exit(); // Exit after seeding
+    process.exit();
   } catch (err) {
-    console.error('Error seeding database:', err);
+    console.error('Seeding failed:', err);
     process.exit(1);
   }
-}
+};
 
-seedDatabase();
+seedData();

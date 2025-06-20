@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 
 const Guest = sequelize.define('Guest', {
+<<<<<<< HEAD
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -23,5 +24,15 @@ const Guest = sequelize.define('Guest', {
 }, {
   timestamps: true,
 });
+=======
+  name: DataTypes.STRING,
+  email: DataTypes.STRING,
+}, { timestamps: true });
+
+// Associations
+Guest.associate = (models) => {
+  Guest.hasMany(models.Checkin, { foreignKey: 'guestId' });
+};
+>>>>>>> origin/QRCodeImplementation
 
 export default Guest;

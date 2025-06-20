@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 // // Importing the sequelize instance and User model
 // import bcrypt from 'bcrypt'; // Import bcrypt for password hashing
 // import jwt from 'jsonwebtoken'; // Import jsonwebtoken for token generation
 // import User from '../models/user.js'; // Import the User model
+=======
+// Importing the sequelize instance and User model
+import bcrypt from 'bcrypt'; // Import bcrypt for password hashing
+import jwt from 'jsonwebtoken'; // Import jsonwebtoken for token generation
+import User from '../models/User.js'; // Import the User models
+>>>>>>> origin/QRCodeImplementation
 
  export const register = async (req, res) => {
    try {
