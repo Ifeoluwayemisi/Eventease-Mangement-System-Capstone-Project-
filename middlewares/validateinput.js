@@ -12,7 +12,10 @@ export const createEventValidator = [
   body('time').notEmpty().withMessage('Time is required'),
   body('location').notEmpty().withMessage('Location is required'),
   body('guestLimit').isInt({ min: 1 }).withMessage('Guest limit must be a positive number'),
-  param('organizerId').isInt().withMessage('Organizer ID must be a valid number')
+  body('organizerId')
+  .isNumeric()
+  .withMessage('Organizer ID must be a valid number')
+
 ];
 
 

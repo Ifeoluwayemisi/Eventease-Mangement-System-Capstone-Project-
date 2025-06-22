@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 
 const Schedule = sequelize.define('Schedule', {
-  id: {
+  scheduleId: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
@@ -26,6 +26,7 @@ const Schedule = sequelize.define('Schedule', {
     allowNull: false,
   },
 }, {
+  tableName: 'Schedules',
   timestamps: true,
   indexes: [
     {
@@ -36,6 +37,7 @@ const Schedule = sequelize.define('Schedule', {
     },
   ],
 });
+
 
 
 export default Schedule;

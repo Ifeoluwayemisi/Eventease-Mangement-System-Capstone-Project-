@@ -49,10 +49,10 @@ const startServer = async () => {
     await connectDB(); // Sequelize DB connection
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`Server running at http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    console.error('Failed to start server:', error);
     process.exit(1);
   }
 };
