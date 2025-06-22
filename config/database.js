@@ -4,13 +4,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  process.env.DB_NAME || 'eventease_db',
+  process.env.DB_USER || 'root',
+  process.env.DB_PASSWORD || 'password',
   {
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOST || 'localhost',
     dialect: process.env.DB_DIALECT || 'mysql',
-    port: process.env.DB_PORT || 3306,
+    port: Number(process.env.DB_PORT) || 3306,
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
     pool: {
       max: 5,

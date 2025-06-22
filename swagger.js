@@ -6,17 +6,26 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Event Check-in API',
+      title: 'Eventease API',
       version: '1.0.0',
-      description: 'QR Code Check-in system for events',
+      description: 'QR Code Event Check-in system with guest and event management',
     },
     servers: [
       {
         url: 'http://localhost:5000/api',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
-  apis: ['./routes/*.js'], // <== make sure this path is correct!
+  apis: ['./routes/*.js'], // Keep this accurate based on where the route docs are written
 };
 
 const swaggerSpec = swaggerJSDoc(options);

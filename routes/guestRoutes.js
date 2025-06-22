@@ -1,21 +1,24 @@
-import express from 'express';
-import { getGuestsByEvent } from '../controllers/guestController.js';
-import Guest from '../models/guest.js';
-
+import express from "express";
+import {
+  createGuest,
+  getGuestsByEvent,
+  deleteGuest,
+  updateGuest,
+  getGuestById,
+} from "../controllers/guestController.js";
+import Guest from "../models/guest.js";
+import {
+  createGuestValidator,
+  validationInputMiddleware,
+} from "../middlewares/validateinput.js";
 
 const router = express.Router();
-
-// routes/guestRoutes.js
-router.get('/', async (req, res) => {
-  const guests = await Guest.findAll();
-  res.json(guests);
-});
 
 /**
  * @swagger
  * tags:
- *   name: Guests List
- *   description: Get Guest list by event endpoints
+ *   name: Guests
+ *   description: Guest management and retrieval
  */
 
 /**
@@ -23,7 +26,7 @@ router.get('/', async (req, res) => {
  * /api/guests/event/{eventId}:
  *   get:
  *     summary: Get guests registered for a specific event
- *     tags: [Guests Lists]
+ *     tags: [Guests]
  *     parameters:
  *       - in: path
  *         name: eventId
@@ -35,5 +38,37 @@ router.get('/', async (req, res) => {
  *         description: List of guests for the event
  */
 router.get('/event/:eventId', getGuestsByEvent);
+
+// Get all guests (for admin/debug, optional)
+router.get('/', async (req, res) => {
+  try {
+    const guests = await Guest.findAll();
+    res.status(200).json({ status: true, data: guests });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+});
+
+// Create a guest
+router.post(
+  '/create',
+  createGuestValidator,
+  validationInputMiddleware,
+  createGuest
+);
+
+// Get a single guest
+router.get('/:guestId', getGuestById);
+
+// Update a guest
+router.put(
+  '/:guestId',
+  createGuestValidator,
+  validationInputMiddleware,
+  updateGuest
+);
+
+// Delete a guest
+router.delete('/:guestId', deleteGuest);
 
 export default router;
