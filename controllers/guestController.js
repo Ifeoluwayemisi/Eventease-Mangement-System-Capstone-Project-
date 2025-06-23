@@ -6,6 +6,11 @@ export const createGuest = async (req, res) => {
   try {
     const { name, email, phoneNumber, guestType, eventId } = req.body;
 
+    const event = await Event.findByPk(eventId);
+    if (!event) {
+      return res.status(404).json({ status: false, message: 'Event not found' });
+    }
+
     const guest = await Guest.create({ name, email, phoneNumber, guestType, eventId });
 
     res.status(201).json({ status: true, message: 'Guest created', data: guest });
@@ -55,7 +60,7 @@ export const getGuestsByEvent = async (req, res) => {
 // Get a single guest
 export const getGuestById = async (req, res) => {
   try {
-    const guest = await Guest.findByPk(req.params.id);
+    const guest = await Guest.findByPk(req.params.guestId);
 
     if (!guest) {
       return res.status(404).json({ status: false, message: "Guest not found" });
@@ -70,7 +75,7 @@ export const getGuestById = async (req, res) => {
 // Update a guest
 export const updateGuest = async (req, res) => {
   try {
-    const guest = await Guest.findByPk(req.params.id);
+    const guest = await Guest.findByPk(req.params.guestId);
     if (!guest) {
       return res.status(404).json({ status: false, message: "Guest not found" });
     }
@@ -86,7 +91,7 @@ export const updateGuest = async (req, res) => {
 // Delete a guest
 export const deleteGuest = async (req, res) => {
   try {
-    const guest = await Guest.findByPk(req.params.id);
+    const guest = await Guest.findByPk(req.params.guestId);
     if (!guest) {
       return res.status(404).json({ status: false, message: "Guest not found" });
     }

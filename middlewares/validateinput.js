@@ -24,7 +24,7 @@ export const createGuestValidator = [
     body('email').isEmail().withMessage('Provide a vaild Email').normalizeEmail(),
     body('guestType').notEmpty().withMessage('Guest type is required'),
     body('phoneNumber').notEmpty().withMessage('Please input a phone number'),
-    param('eventId').isInt().withMessage('A valid event id is required'),
+    body('eventId').isInt().withMessage('A valid event id is required'),
 ]
 
 
