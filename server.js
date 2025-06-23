@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import fs from 'fs'; // ✅ Add this
 import routes from './routes/index.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -9,11 +10,21 @@ import { connectDB } from './config/database.js';
 
 dotenv.config();
 
+// Ensure `uploads/` folder exists at runtime
+const uploadDir = './uploads';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 const app = express();
 app.use(express.json());
 
 // Serve QR images
 app.use('/qrcodes', express.static('qrcodes'));
+app.use('/uploads', express.static('uploads'));
+
+// ✅ Serve uploaded images
+app.use('/uploads', express.static('uploads'));  // optional but useful for accessing uploaded files
 
 // Routes
 app.use('/api', routes);
