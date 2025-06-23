@@ -52,6 +52,8 @@ export const createEvent = async (req, res) => {
       error: error.message,
     });
   }
+  console.log('Request body:', req.body);
+
 };
 
 // Get total number of events
