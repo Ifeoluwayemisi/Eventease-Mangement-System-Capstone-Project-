@@ -69,15 +69,15 @@ event-management-backend/
 
 ## ✅ Setup Instructions
 
+### API DOCUMENTATION
+
+You can view the full API documentation on postman by clicking the link below:
+[View API Docs on Postman](https://documenter.getpostman.com/view/44828221/2sB2xBDVmn)
+
 ### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Ifeoluwayemisi/Eventease-Mangement-System-Capstone-Project-.git
 
-
-### API DOCUMENTATION
-
-You can view the full API documentation on postman by clicking the link below:
-[View API Docs on Postman](https://documenter.getpostman.com/view/44828221/2sB2xBDVmn)
 
 
